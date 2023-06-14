@@ -9,13 +9,13 @@
 AWeapon::AWeapon()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	bReplicates = true;
 
 	weaponMesh = CreateAbstractDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	SetRootComponent(weaponMesh);
 
 	weaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	weaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	weaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	areaSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AreSphere"));
 	areaSphere->SetupAttachment(RootComponent);
@@ -34,9 +34,11 @@ void AWeapon::BeginPlay()
 
 	if (HasAuthority())
 	{
+		bReplicates = true;
 		areaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		areaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 		areaSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnSphereOverlap);
+		areaSphere->OnComponentEndOverlap.AddDynamic(this, &AWeapon::OnSphereEndOverlap);
 	}
 
 	if (pickupWidget)
@@ -49,10 +51,18 @@ void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 {
 
 	AMainCharacter* MainChar = Cast<AMainCharacter>(OtherActor);
-
-	if (MainChar && pickupWidget)
+	if (MainChar)
 	{
-		pickupWidget->SetVisibility(true);
+		MainChar->SetOverlappingWeapon(this);
+	}
+}
+
+void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	AMainCharacter* MainChar = Cast<AMainCharacter>(OtherActor);
+	if (MainChar)
+	{
+		MainChar->SetOverlappingWeapon(nullptr);
 	}
 }
 
@@ -60,5 +70,13 @@ void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AWeapon::ShowPickupwidget(bool bShowWidget)
+{
+	if (pickupWidget)
+	{
+		pickupWidget->SetVisibility(bShowWidget);
+	}
 }
 
