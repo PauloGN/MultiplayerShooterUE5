@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include   "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
@@ -24,7 +24,7 @@ class SHOOTER_API AWeapon : public AActor
 public:	
 	AWeapon();
 	virtual void Tick(float DeltaTime) override;
-	void ShowPickupwidget(bool bShowWidget);
+	void ShowPickupWidget(bool bShowWidget);
 
 protected:
 

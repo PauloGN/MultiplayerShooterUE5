@@ -98,11 +98,11 @@ void AMainCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeaponRHS)
 {
 	if (overlappingWeapon)
 	{
-		overlappingWeapon->ShowPickupwidget(true);//cliente
+		overlappingWeapon->ShowPickupWidget(true);//cliente
 	}
 	if (LastWeaponRHS)
 	{
-		LastWeaponRHS->ShowPickupwidget(false);//cliente
+		LastWeaponRHS->ShowPickupWidget(false);//cliente
 	}
 }
 
@@ -113,7 +113,7 @@ void AMainCharacter::SetOverlappingWeapon(AWeapon* WeaponRHS)
 	{
 		if (HasAuthority() && IsLocallyControlled())
 		{
-			overlappingWeapon->ShowPickupwidget(false);
+			overlappingWeapon->ShowPickupWidget(false);
 		}
 	}
 
@@ -122,7 +122,7 @@ void AMainCharacter::SetOverlappingWeapon(AWeapon* WeaponRHS)
 	{
 		if (overlappingWeapon)
 		{
-			overlappingWeapon->ShowPickupwidget(true);
+			overlappingWeapon->ShowPickupWidget(true);
 		}
 	}
 }

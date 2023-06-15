@@ -10,7 +10,7 @@ AWeapon::AWeapon()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	weaponMesh = CreateAbstractDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+	weaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	SetRootComponent(weaponMesh);
 
 	weaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
@@ -48,7 +48,6 @@ void AWeapon::BeginPlay()
 
 void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
 	AMainCharacter* MainChar = Cast<AMainCharacter>(OtherActor);
 	if (MainChar)
 	{
@@ -71,7 +70,7 @@ void AWeapon::Tick(float DeltaTime)
 
 }
 
-void AWeapon::ShowPickupwidget(bool bShowWidget)
+void AWeapon::ShowPickupWidget(bool bShowWidget)
 {
 	if (pickupWidget)
 	{
