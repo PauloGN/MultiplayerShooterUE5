@@ -26,7 +26,7 @@ AMainCharacter::AMainCharacter()
 	followCamera->SetupAttachment(cameraBoom, USpringArmComponent::SocketName);
 	followCamera->bUsePawnControlRotation = false;
 
-	//Control rotation and moviment stuffs
+	//Control rotation and movement stuffs
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -51,7 +51,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void AMainCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME_CONDITION(AMainCharacter, overlappingWeapon, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(AMainCharacter, overlappingWeapon, COND_OwnerOnly);//pawn owner
 }
 
 void AMainCharacter::BeginPlay()
@@ -60,9 +60,16 @@ void AMainCharacter::BeginPlay()
 	
 }
 
+void AMainCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+
+}
+
 void AMainCharacter::MoveForward(float Value)
 {
-	if (!Controller.IsNull() && Value != 0.0f)
+	if (Controller && Value != 0.0f)
 	{
 		//Getting a controller forwardDirection
 		const FRotator YawRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
@@ -74,7 +81,7 @@ void AMainCharacter::MoveForward(float Value)
 
 void AMainCharacter::MoveRight(float Value)
 {
-	if (!Controller.IsNull() && Value != 0.0f)
+	if (Controller && Value != 0.0f)
 	{
 		//Getting a controller forwardDirection
 		const FRotator YawRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
@@ -94,15 +101,16 @@ void AMainCharacter::LookUp(float Value)
 	AddControllerPitchInput(Value);
 }
 
+//not called on server
 void AMainCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeaponRHS)
 {
 	if (overlappingWeapon)
 	{
-		overlappingWeapon->ShowPickupWidget(true);//cliente
+		overlappingWeapon->ShowPickupWidget(true);//Client
 	}
 	if (LastWeaponRHS)
 	{
-		LastWeaponRHS->ShowPickupWidget(false);//cliente
+		LastWeaponRHS->ShowPickupWidget(false);//Client
 	}
 }
 
@@ -111,14 +119,14 @@ void AMainCharacter::SetOverlappingWeapon(AWeapon* WeaponRHS)
 
 	if (overlappingWeapon)
 	{
-		if (HasAuthority() && IsLocallyControlled())
+		if (IsLocallyControlled())
 		{
 			overlappingWeapon->ShowPickupWidget(false);
 		}
 	}
 
 	overlappingWeapon = WeaponRHS;
-	if (IsLocallyControlled())
+	if (IsLocallyControlled())//The player hosting the game on the server
 	{
 		if (overlappingWeapon)
 		{
@@ -126,12 +134,3 @@ void AMainCharacter::SetOverlappingWeapon(AWeapon* WeaponRHS)
 		}
 	}
 }
-
-
-void AMainCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-
-}
-
