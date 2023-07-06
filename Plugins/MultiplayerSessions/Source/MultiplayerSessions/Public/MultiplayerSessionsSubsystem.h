@@ -10,7 +10,7 @@
 #include "MultiplayerSessionsSubsystem.generated.h"
 
 //
-//Declaring our own Custum delegates for the MenuClass to bind call backs to
+//Declaring our own Custom delegates for the MenuClass to bind call backs to
 //
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnCreateSessionComplete, bool, bWasSuccessful);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FMultiplayerOnFindSessionsComplete, const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
@@ -70,7 +70,7 @@ private:
 
 	//
 	// Delegates to add to the Online Session Interface delegate list.
-	// We'll  bind ourr MultiplayerSessionSubsystem internal callback to these
+	// We'll  bind our Multiplayer SessionSubsystem internal callback to these
 	//
 	FOnCreateSessionCompleteDelegate createSessionCompleteDelegate;
 	FOnFindSessionsCompleteDelegate findSessionsCompleteDelegate;

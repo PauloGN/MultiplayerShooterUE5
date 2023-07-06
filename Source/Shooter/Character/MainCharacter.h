@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputAction.h"
 #include "MainCharacter.generated.h"
 
 UCLASS()
@@ -24,9 +25,9 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	//Movement
-	void MoveForward(float Value);
-	void MoveRight(float Value);
+	///Enhanced movement
+	void EnhancedMove(const FInputActionValue& value);
+	///Enhanced
 	void Turn(float Value);
 	void LookUp(float Value);
 
@@ -51,9 +52,26 @@ private:
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(AWeapon* LastWeaponRHS);
 
+	UPROPERTY(VisibleAnywhere)
+	class UCombatComponent* combat;
+
 public:	
 
 	//Weapon
 	void SetOverlappingWeapon(AWeapon* WeaponRHS);
+
+
+	//Input System
+#pragma region ENHANCED INPUT SYSTEM
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
+	class UInputMappingContext* InputMappingContext;
+
+	//Inputs
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
+	class UInputAction* inputToJump;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
+	 class UInputAction* inputToMove;
+#pragma endregion
 
 };

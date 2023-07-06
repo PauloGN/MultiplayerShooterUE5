@@ -3,8 +3,7 @@
 
 #include "MultiplayerSessionsSubsystem.h"
 //OnlineSessions
-#include "OnlineSubsystem.h"//included as a dependency for our multiplayer sessions plugin
-#include "OnlineSessionSettings.h"
+#include "OnlineSubsystem.h"//included as a dependency for our multi player sessions plugin
 #include "OnlineSessionSettings.h"
 
 UMultiplayerSessionsSubsystem::UMultiplayerSessionsSubsystem():
@@ -14,13 +13,13 @@ UMultiplayerSessionsSubsystem::UMultiplayerSessionsSubsystem():
 	destroySessionCompleteDelegate(FOnDestroySessionCompleteDelegate::CreateUObject(this, &ThisClass::OnDestroySessionComplete)),
 	startSessionCompleteDelegate(FOnStartSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnStartSessionComplete))
 {
-	//Iniatialize subsystem and session interface references
+	//Initialize subsystem and session interface references
 	subsystem = IOnlineSubsystem::Get();
 	if (subsystem)
 	{
 		sessionInterface = subsystem->GetSessionInterface();
 
-		if (GEngine)
+		if (GEngine)//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Found subsystem %s"), *subsystem->GetSubsystemName().ToString()));
 		}
@@ -118,9 +117,9 @@ void UMultiplayerSessionsSubsystem::JoinSession(const FOnlineSessionSearchResult
 	joinSessionCompleteDelegateHandle = sessionInterface->AddOnJoinSessionCompleteDelegate_Handle(joinSessionCompleteDelegate);
 
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	bool bJoinSuccessfuly = sessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, SessionResult);
+	bool bJoinSuccessfully = sessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, SessionResult);
 
-	if (!bJoinSuccessfuly)
+	if (!bJoinSuccessfully)
 	{
 		sessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(joinSessionCompleteDelegateHandle);
 		multiplayerOnJoinSessionComplete.Broadcast(EOnJoinSessionCompleteResult::UnknownError);

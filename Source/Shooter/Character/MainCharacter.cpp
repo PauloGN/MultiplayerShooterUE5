@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "MainCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -11,7 +10,11 @@
 #include "Net/UnrealNetwork.h"
 //Game Obj
 #include "Shooter/Weapon/Weapon.h"
-
+//Game Component
+#include "Shooter/CharComponents/CombatComponent.h"
+//Enhanced Input system
+#include "EnhancedInputComponent.h"
+#include <EnhancedInputSubsystems.h>
 
 AMainCharacter::AMainCharacter()
 {
@@ -33,19 +36,31 @@ AMainCharacter::AMainCharacter()
 	//HUD
 	overheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverHeadWidget"));
 	overheadWidget->SetupAttachment(RootComponent);
-	
+
+	//Components
+	combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+	combat->SetIsReplicated(true);
 }
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
+	//PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
 
-	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ThisClass::MoveForward);
-	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ThisClass::MoveRight);
-	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ThisClass::Turn);
-	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ThisClass::LookUp);
+	//PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ThisClass::Turn);
+	//PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ThisClass::LookUp);
+
+	//New InputSystem
+	//https://www.youtube.com/watch?v=SlkpSJEmrgc&ab_channel=Shawnthebro
+	//https://www.youtube.com/watch?v=E76KSs5ZoME&ab_channel=RogueEntity
+	//https://www.youtube.com/watch?v=fW1pXOAIviw&t=3s&ab_channel=DruidMechanics
+	if(UEnhancedInputComponent* Input = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		Input->BindAction(inputToJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		Input->BindAction(inputToMove, ETriggerEvent::Triggered, this, &ThisClass::EnhancedMove);
+	}
+
 }
 
 void AMainCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -57,7 +72,15 @@ void AMainCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//Enhanced system access add Input Mapping context
+	if(APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if(UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			EnhancedInputSubsystem->AddMappingContext(InputMappingContext, 0);
+		}
+	}
 }
 
 void AMainCharacter::Tick(float DeltaTime)
@@ -67,27 +90,27 @@ void AMainCharacter::Tick(float DeltaTime)
 
 }
 
-void AMainCharacter::MoveForward(float Value)
+void AMainCharacter::EnhancedMove(const FInputActionValue& value)
 {
-	if (Controller && Value != 0.0f)
+	const FVector2D moveVector = value.Get<FVector2D>();
+
+	//Move Forward
+	if (Controller && moveVector.X != 0.0f)
 	{
 		//Getting a controller forwardDirection
 		const FRotator YawRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
 		const FVector Direction(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X));
 
-		AddMovementInput(Direction, Value);
+		AddMovementInput(Direction, moveVector.X);
 	}
-}
-
-void AMainCharacter::MoveRight(float Value)
-{
-	if (Controller && Value != 0.0f)
+	//Move Right
+	if (Controller && moveVector.Y != 0.0f)
 	{
 		//Getting a controller forwardDirection
 		const FRotator YawRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
 		const FVector Direction(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y));
 
-		AddMovementInput(Direction, Value);
+		AddMovementInput(Direction, moveVector.Y);
 	}
 }
 

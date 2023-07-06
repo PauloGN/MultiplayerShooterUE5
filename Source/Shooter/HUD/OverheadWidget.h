@@ -54,6 +54,4 @@ protected:
 	//Handle player name
 	void SetPlayerNameTimer(APawn* InPawn);
 
-
-
 };
