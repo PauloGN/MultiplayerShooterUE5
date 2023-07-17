@@ -15,7 +15,6 @@ void UMainCharAnimInstance::NativeInitializeAnimation()
 
 void UMainCharAnimInstance::NativeUpdateAnimation(float DeltaTime)
 {
-
 	Super::NativeUpdateAnimation(DeltaTime);
 
 	if (mainCharacter == nullptr)

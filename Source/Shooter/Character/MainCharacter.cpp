@@ -16,6 +16,8 @@
 #include "EnhancedInputComponent.h"
 #include <EnhancedInputSubsystems.h>
 
+#include "gmock/gmock-matchers.h"
+
 AMainCharacter::AMainCharacter()
 {
 
@@ -59,6 +61,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	{
 		Input->BindAction(inputToJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		Input->BindAction(inputToMove, ETriggerEvent::Triggered, this, &ThisClass::EnhancedMove);
+		Input->BindAction(inputLookAction, ETriggerEvent::Triggered, this, &ThisClass::EnhancedLook);
 	}
 
 }
@@ -114,14 +117,17 @@ void AMainCharacter::EnhancedMove(const FInputActionValue& value)
 	}
 }
 
-void AMainCharacter::Turn(float Value)
+void AMainCharacter::EnhancedLook(const FInputActionValue& value)
 {
-	AddControllerYawInput(Value);
-}
+	FVector2D lookVector = value.Get<FVector2D>();
 
-void AMainCharacter::LookUp(float Value)
-{
-	AddControllerPitchInput(Value);
+	if(GetController())
+	{
+		//Look Up
+		AddControllerPitchInput(lookVector.Y);
+		//Turn
+		AddControllerYawInput(lookVector.X);
+	}
 }
 
 //not called on server

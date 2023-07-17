@@ -27,9 +27,8 @@ protected:
 
 	///Enhanced movement
 	void EnhancedMove(const FInputActionValue& value);
+	void EnhancedLook(const FInputActionValue& value);
 	///Enhanced
-	void Turn(float Value);
-	void LookUp(float Value);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -71,7 +70,10 @@ public:
 	class UInputAction* inputToJump;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
-	 class UInputAction* inputToMove;
+	class UInputAction* inputToMove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
+	class UInputAction* inputLookAction;
 #pragma endregion
 
 };
