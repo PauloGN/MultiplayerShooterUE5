@@ -55,7 +55,6 @@ public:
 //Input System
 #pragma region ENHANCED INPUT SYSTEM
 
-public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
 	class UInputMappingContext* InputMappingContext;
 

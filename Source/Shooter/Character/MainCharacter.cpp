@@ -133,7 +133,7 @@ void AMainCharacter::EnhancedLook(const FInputActionValue& value)
 	}
 }
 
-//not called on server
+//not called on server it is replicated down to client only
 void AMainCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeaponRHS)
 {
 	if (overlappingWeapon)

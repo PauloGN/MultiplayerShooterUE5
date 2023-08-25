@@ -14,7 +14,6 @@ class SHOOTER_API UOverheadWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-
 		// OverheadWidget.h
 
 private:

@@ -33,7 +33,7 @@ void AWeapon::BeginPlay()
 
 	if (HasAuthority())
 	{
-		bReplicates = true;
+		SetReplicates(true);
 		areaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		areaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 		areaSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnSphereOverlap);
