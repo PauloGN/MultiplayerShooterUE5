@@ -31,10 +31,11 @@ private:
 
 public:
 
+	//in blueprint it has to have the same name
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* displayText;
 	
-	void SetDisplayText(FString TextToDisplay);
+	void SetDisplayText(const FString& TextToDisplay);
 
 	UFUNCTION(BlueprintCallable)
 	void ShowPlayerNetLocalRole(APawn* InPawn);

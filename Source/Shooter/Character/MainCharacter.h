@@ -25,11 +25,6 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	///Enhanced movement
-	void EnhancedMove(const FInputActionValue& value);
-	void EnhancedLook(const FInputActionValue& value);
-	///Enhanced
-
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class USpringArmComponent* cameraBoom;
@@ -37,10 +32,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class UCameraComponent* followCamera;
 
-/// <summary>
-/// HUD
-/// </summary>
-	UPROPERTY(EditAnywhere, BlueprintReadOnly,meta = (AllowPrivateAccess = "true"), Category = HUD)
+	// HUD
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = HUD)
 	class UWidgetComponent* overheadWidget;
 
 	//WEAPON
@@ -59,9 +52,10 @@ public:
 	//Weapon
 	void SetOverlappingWeapon(AWeapon* WeaponRHS);
 
-
-	//Input System
+//Input System
 #pragma region ENHANCED INPUT SYSTEM
+
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
 	class UInputMappingContext* InputMappingContext;
 
@@ -70,10 +64,16 @@ public:
 	class UInputAction* inputToJump;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
-	class UInputAction* inputToMove;
+	UInputAction* inputToMove;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
-	class UInputAction* inputLookAction;
+	UInputAction* inputLookAction;
+
+protected:
+	///Enhanced movement
+	void EnhancedMove(const FInputActionValue& value);
+	void EnhancedLook(const FInputActionValue& value);
+	///Enhanced
 #pragma endregion
 
 };

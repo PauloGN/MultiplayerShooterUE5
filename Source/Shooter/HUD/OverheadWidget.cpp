@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
-void UOverheadWidget::SetDisplayText(FString TextToDisplay)
+void UOverheadWidget::SetDisplayText(const FString& TextToDisplay)
 {
 	if (displayText)
 	{
@@ -16,7 +16,7 @@ void UOverheadWidget::SetDisplayText(FString TextToDisplay)
 
 void UOverheadWidget::ShowPlayerNetLocalRole(APawn* InPawn)
 {
-	ENetRole LocalRole = InPawn->GetLocalRole();
+	const ENetRole LocalRole = InPawn->GetLocalRole();
 	FString Role;
 
 	switch (LocalRole)
@@ -28,12 +28,12 @@ void UOverheadWidget::ShowPlayerNetLocalRole(APawn* InPawn)
 		break;
 	case ROLE_SimulatedProxy:
 
-		Role = FString("Simulated");
+		Role = FString("Simulated Proxy");
 
 		break;
 	case ROLE_AutonomousProxy:
 
-		Role = FString("Autonomous");
+		Role = FString("Autonomous Proxy");
 
 		break;
 	case ROLE_Authority:
@@ -50,13 +50,13 @@ void UOverheadWidget::ShowPlayerNetLocalRole(APawn* InPawn)
 		break;
 	}
 
-	FString LocalRoleString = FString::Printf(TEXT("Local Role: %s"), *Role);
+	const FString LocalRoleString = FString::Printf(TEXT("Local Role: %s"), *Role);
 	SetDisplayText(LocalRoleString);
 }
 
 void UOverheadWidget::ShowPlayerNetRemoteRole(APawn* InPawn)
 {
-	ENetRole RemoteRole = InPawn->GetRemoteRole();
+	const ENetRole RemoteRole = InPawn->GetRemoteRole();
 	FString Role;
 
 	switch (RemoteRole)
@@ -90,7 +90,7 @@ void UOverheadWidget::ShowPlayerNetRemoteRole(APawn* InPawn)
 		break;
 	}
 
-	FString RemoteRoleString = FString::Printf(TEXT("Remote Role: %s"), *Role);
+	const FString RemoteRoleString = FString::Printf(TEXT("Remote Role: %s"), *Role);
 	SetDisplayText(RemoteRoleString);
 }
 
@@ -102,7 +102,6 @@ void UOverheadWidget::ShowPlayerName(APawn* InPawn)
 
 	if (InPawn == nullptr)
 	{
-		// Tratar o erro de ponteiro nulo
 		return;
 	}
 
@@ -115,7 +114,6 @@ void UOverheadWidget::ShowPlayerName(APawn* InPawn)
 
 	const FString PlayerName = InPawn->GetPlayerState()->GetPlayerName();
 	SetDisplayText(PlayerName);
-
 }
 
 void UOverheadWidget::NativeDestruct()

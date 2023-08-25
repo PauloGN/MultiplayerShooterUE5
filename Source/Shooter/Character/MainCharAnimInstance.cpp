@@ -30,5 +30,5 @@ void UMainCharAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	bIsInAir = mainCharacter->GetCharacterMovement()->IsFalling();
 
-	bIsAccelerating = mainCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.0f ? true : false;
+	bIsAccelerating = (mainCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size()) > 0.0f ? true : false;
 }

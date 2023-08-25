@@ -21,7 +21,6 @@ public:
 	
 private:
 
-	//
 	// Forward declare the character that uses this animation
 	//since we are going to use this in blueprint...(UPRO...)
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))

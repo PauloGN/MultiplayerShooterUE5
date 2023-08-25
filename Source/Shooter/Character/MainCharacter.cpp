@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MainCharacter.h"
+//Basic set up
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -16,7 +17,7 @@
 #include "EnhancedInputComponent.h"
 #include <EnhancedInputSubsystems.h>
 
-#include "gmock/gmock-matchers.h"
+//#include "gmock/gmock-matchers.h"
 
 AMainCharacter::AMainCharacter()
 {
@@ -24,15 +25,17 @@ AMainCharacter::AMainCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	cameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
-	cameraBoom->SetupAttachment(GetMesh());
+	cameraBoom->SetupAttachment(GetMesh());//attach to the mesh because in future root(capsule) will change size
 	cameraBoom->TargetArmLength = 600.0f;
-	cameraBoom->bUsePawnControlRotation = true;
+	cameraBoom->bUsePawnControlRotation = true;//rotate camera boom along with controller
+	cameraBoom->SetWorldLocation({ 0.0f, 0.0f, 85.0f });
+
 	followCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Follow Camera"));
 	followCamera->SetupAttachment(cameraBoom, USpringArmComponent::SocketName);
 	followCamera->bUsePawnControlRotation = false;
 
-	//Control rotation and movement stuffs
-	bUseControllerRotationYaw = false;
+	//Controls rotation and movement
+	bUseControllerRotationYaw = false;//do not rotata along with the controller rotation
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	//HUD
@@ -48,22 +51,17 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	//PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
-
-	//PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ThisClass::Turn);
-	//PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ThisClass::LookUp);
-
 	//New InputSystem
-	//https://www.youtube.com/watch?v=SlkpSJEmrgc&ab_channel=Shawnthebro
 	//https://www.youtube.com/watch?v=E76KSs5ZoME&ab_channel=RogueEntity
-	//https://www.youtube.com/watch?v=fW1pXOAIviw&t=3s&ab_channel=DruidMechanics
+	//https://www.youtube.com/watch?v=fW1pXOAIviw&t=3s&ab_channel=DruidMechanics stephan
+	//https://www.youtube.com/watch?v=dS5AUaYFcdw C++
+	//https://www.youtube.com/watch?v=_pPCS12aVtg&list=PLzykqv-wgIQXompUswD5iHllUHxGY7w0q
 	if(UEnhancedInputComponent* Input = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		Input->BindAction(inputToJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		Input->BindAction(inputToMove, ETriggerEvent::Triggered, this, &ThisClass::EnhancedMove);
 		Input->BindAction(inputLookAction, ETriggerEvent::Triggered, this, &ThisClass::EnhancedLook);
 	}
-
 }
 
 void AMainCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -97,6 +95,11 @@ void AMainCharacter::EnhancedMove(const FInputActionValue& value)
 {
 	const FVector2D moveVector = value.Get<FVector2D>();
 
+	//FRotator order
+		//Y = Pitch
+		//Z = Yaw
+		//X = Roll
+
 	//Move Forward
 	if (Controller && moveVector.X != 0.0f)
 	{
@@ -109,7 +112,7 @@ void AMainCharacter::EnhancedMove(const FInputActionValue& value)
 	//Move Right
 	if (Controller && moveVector.Y != 0.0f)
 	{
-		//Getting a controller forwardDirection
+		//Getting a controller Right Direction
 		const FRotator YawRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
 		const FVector Direction(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y));
 
@@ -119,14 +122,14 @@ void AMainCharacter::EnhancedMove(const FInputActionValue& value)
 
 void AMainCharacter::EnhancedLook(const FInputActionValue& value)
 {
-	FVector2D lookVector = value.Get<FVector2D>();
+	const FVector2D lookVector = value.Get<FVector2D>();
 
 	if(GetController())
 	{
-		//Look Up
-		AddControllerPitchInput(lookVector.Y);
 		//Turn
 		AddControllerYawInput(lookVector.X);
+		//Look Up
+		AddControllerPitchInput(lookVector.Y);
 	}
 }
 
