@@ -44,7 +44,7 @@ AMainCharacter::AMainCharacter()
 
 	//Components
 	combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
-	combat->SetIsReplicated(true);
+	combat->SetIsReplicated(true);//Components does not need to be registered
 }
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -60,8 +60,20 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	{
 		Input->BindAction(inputToJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		Input->BindAction(inputToMove, ETriggerEvent::Triggered, this, &ThisClass::EnhancedMove);
-		Input->BindAction(inputLookAction, ETriggerEvent::Triggered, this, &ThisClass::EnhancedLook);
+		Input->BindAction(inputLookUp, ETriggerEvent::Triggered, this, &ThisClass::EnhancedLook);
+		Input->BindAction(inputAction, ETriggerEvent::Started, this, &ThisClass::EquipButtonPressed);
 	}
+}
+
+void AMainCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if(combat)
+	{
+		combat->character = this;
+	}
+
 }
 
 void AMainCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -133,6 +145,13 @@ void AMainCharacter::EnhancedLook(const FInputActionValue& value)
 	}
 }
 
+void AMainCharacter::EquipButtonPressed()
+{
+	if(combat && HasAuthority())
+	{
+		combat->EquipWeapon(overlappingWeapon);
+	}
+}
 //not called on server it is replicated down to client only
 void AMainCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeaponRHS)
 {

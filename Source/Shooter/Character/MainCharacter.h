@@ -17,7 +17,7 @@ public:
 	AMainCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual void PostInitializeComponents() override;
 	//REPLICATION
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps)const override;
 
@@ -66,13 +66,19 @@ public:
 	UInputAction* inputToMove;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
-	UInputAction* inputLookAction;
+	UInputAction* inputLookUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input")
+	UInputAction* inputAction;
 
 protected:
 	///Enhanced movement
 	void EnhancedMove(const FInputActionValue& value);
 	void EnhancedLook(const FInputActionValue& value);
-	///Enhanced
+	///
+	///Enhanced Actions
+	void EquipButtonPressed();
+	///
 #pragma endregion
 
 };
