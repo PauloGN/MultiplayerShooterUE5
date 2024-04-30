@@ -24,7 +24,6 @@ AWeapon::AWeapon()
 
 	pickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	pickupWidget->SetupAttachment(RootComponent);
-
 }
 
 void AWeapon::BeginPlay()

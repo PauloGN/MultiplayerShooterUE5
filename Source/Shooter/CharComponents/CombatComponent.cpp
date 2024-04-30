@@ -52,4 +52,3 @@ void UCombatComponent::EquipWeapon(AWeapon* weaponToEquip)
 
 	equippedWeapon->SetOwner(character);
 }
-

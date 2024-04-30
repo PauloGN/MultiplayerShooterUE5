@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include   "CoreMinimal.h"
+#include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
@@ -53,5 +53,4 @@ private:
 public:	
 
 	FORCEINLINE void SetWeaponState(EWeaponState state) { weaponState = state; }
-
 };
